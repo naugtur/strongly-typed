@@ -1,0 +1,28 @@
+{
+  "name": "strongly-typed",
+  "version": "1.0.0",
+  "description": "Strongly typed javascript objects, self-validating, detailed error reports",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naugtur/strongly-typed.git"
+  },
+  "keywords": [
+    "type",
+    "types",
+    "object",
+    "validation",
+    "interface",
+    "class",
+    "struct"
+  ],
+  "author": "naugtur",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/naugtur/strongly-typed/issues"
+  },
+  "homepage": "https://github.com/naugtur/strongly-typed"
+}
