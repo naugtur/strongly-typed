@@ -15,6 +15,11 @@ var TypeB = StronglyTyped({
     somefield: "prototype field"
 })
 
+var TypeC = StronglyTyped({
+    "a": {},
+    "b": !"whatever falsy"
+})
+
 var Autoid1 = StronglyTyped({
     "id": "number",
     "text": "string"
@@ -42,7 +47,7 @@ assert.doesNotThrow(function () {
         b: 123,
         a: "foo"
     })
-
+    
     var y = new TypeB({
         b: {
             c: 123
@@ -50,14 +55,19 @@ assert.doesNotThrow(function () {
         a: "foo"
     })
 
-    var z = new InterfaceA({
+    var z = new TypeC({
+        b: null,
+        a: null
+    })
+    
+    var i = new InterfaceA({
         methodname: function () {}
     })
 
-    var a = new Autoid1({
+    var aa = new Autoid1({
         text: "foo"
     })
-    var a = new Autoid2({
+    var ab = new Autoid2({
         text: "foo"
     })
 }, "expected object creation to succeed")
@@ -140,3 +150,5 @@ assert.throws(
     /b\.c:string$/,
     "expected TypeError on incorrect object definition3"
 );
+
+console.log('done');
