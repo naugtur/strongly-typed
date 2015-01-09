@@ -1,6 +1,6 @@
 {
   "name": "strongly-typed",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Strongly typed javascript objects, self-validating, detailed error reports",
   "main": "index.js",
   "scripts": {
