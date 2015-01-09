@@ -10,19 +10,16 @@ function each(ob, f) {
 
 function validate(obj, desc, parent) {
     parent = parent || '';
-    //console.log('-r ' + parent, obj, desc);
+
     var errors = [];
     each(desc, function (val, key) {
-        //console.log('v ' + key);
         if (typeof val === "string") {
-            //console.log('  str');
             //check
             if (!(typeof obj[key] === val)) {
-                //console.log('err found', obj[key], val)
+
                 errors.push(parent + key+':'+(typeof obj[key]))
             }
         } else {
-            //console.log('  recur');
             if (obj[key]) {
                 errors = errors.concat(validate(obj[key], val, parent + key + '.'))
             } else {
@@ -44,19 +41,16 @@ module.exports = function (desc, proto) {
                 throw new TypeError("Unexpected field " + key);
             }
         });
-        //console.log('self', self);
         self.validate()
     }
     F.prototype = proto || {}
     var superValidate = proto && proto.validate;
     F.prototype.validate = function () {
         var errors = validate(this, desc)
-        //console.log(errors);
         if (errors.length > 0) {
             throw new TypeError("Incorrect values for fields: " + errors.join())
         }
         if (superValidate) {
-            //console.log('calling proto.validate')
             return superValidate.call(this)
         }
     }
