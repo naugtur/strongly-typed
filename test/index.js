@@ -15,6 +15,23 @@ var TypeB = StronglyTyped({
     somefield: "prototype field"
 })
 
+var Autoid1 = StronglyTyped({
+    "id": "number",
+    "text": "string"
+}, {
+    constructor: function () {
+        this.id = 123;
+    }
+})
+
+function OriginalAutoid() {
+    this.id = 123;
+}
+var Autoid2 = StronglyTyped({
+    "id": "number",
+    "text": "string"
+}, OriginalAutoid.prototype)
+
 var InterfaceA = StronglyTyped({
     "methodname": "function"
 })
@@ -32,9 +49,16 @@ assert.doesNotThrow(function () {
         },
         a: "foo"
     })
-    
+
     var z = new InterfaceA({
-        methodname: function(){}
+        methodname: function () {}
+    })
+
+    var a = new Autoid1({
+        text: "foo"
+    })
+    var a = new Autoid2({
+        text: "foo"
     })
 }, "expected object creation to succeed")
 

@@ -16,14 +16,13 @@ function validate(obj, desc, parent) {
         if (typeof val === "string") {
             //check
             if (!(typeof obj[key] === val)) {
-
-                errors.push(parent + key+':'+(typeof obj[key]))
+                errors.push(parent + key + ':' + (typeof obj[key]))
             }
         } else {
             if (obj[key]) {
                 errors = errors.concat(validate(obj[key], val, parent + key + '.'))
             } else {
-                errors.push(parent + key+':missing')
+                errors.push(parent + key + ':missing')
             }
         }
 
@@ -41,6 +40,9 @@ module.exports = function (desc, proto) {
                 throw new TypeError("Unexpected field " + key);
             }
         });
+        if (proto) {
+            proto.constructor.apply(this, arguments);
+        }
         self.validate()
     }
     F.prototype = proto || {}
