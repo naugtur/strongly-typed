@@ -1,12 +1,13 @@
-var StronglyTyped = require('../')
+var stronglyTyped = require('../')
 var assert = require('assert')
 
-var TypeA = StronglyTyped({
+var TypeA = stronglyTyped({
     "a": "string",
-    "b": "number"
+    "b": "number",
+    "c": []
 })
 
-var TypeB = StronglyTyped({
+var TypeB = stronglyTyped({
     "a": "string",
     "b": {
         c: "number"
@@ -15,12 +16,12 @@ var TypeB = StronglyTyped({
     somefield: "prototype field"
 })
 
-var TypeC = StronglyTyped({
+var TypeC = stronglyTyped({
     "a": {},
-    "b": !"whatever falsy"
+    "b": !"falsy indicates a field must exist, any type"
 })
 
-var Autoid1 = StronglyTyped({
+var Autoid1 = stronglyTyped({
     "id": "number",
     "text": "string"
 }, {
@@ -32,69 +33,90 @@ var Autoid1 = StronglyTyped({
 function OriginalAutoid() {
     this.id = 123;
 }
-var Autoid2 = StronglyTyped({
+var Autoid2 = stronglyTyped({
     "id": "number",
     "text": "string"
 }, OriginalAutoid.prototype)
 
-var InterfaceA = StronglyTyped({
+var InterfaceA = stronglyTyped({
     "methodname": "function"
 })
 
 
 assert.doesNotThrow(function () {
-    var x = new TypeA({
+    var x = TypeA({
         b: 123,
-        a: "foo"
+        a: "foo",
+        c: []
     })
-    
-    var y = new TypeB({
+
+    var y = TypeB({
         b: {
             c: 123
         },
         a: "foo"
     })
 
-    var z = new TypeC({
+    var z = TypeC({
         b: null,
         a: null
     })
-    
-    var i = new InterfaceA({
+
+    var i = InterfaceA({
         methodname: function () {}
     })
 
-    var aa = new Autoid1({
+    var aa = Autoid1({
         text: "foo"
     })
-    var ab = new Autoid2({
+    var ab = Autoid2({
         text: "foo"
     })
 }, "expected object creation to succeed")
 
 
-var x = new TypeB({
+var x = TypeB({
     b: {
         c: 123
     },
     a: "foo"
 })
 
+var z = InterfaceA({
+    methodname: function () {}
+})
+
+var ab = Autoid2({
+    text: "foo"
+})
+
 assert.ok(x.somefield, "expected prototype to be passed")
 
+
+assert.ok(TypeB.created(x), "expected instanceof to work")
+assert.ok(!TypeB.created(z), "expected instanceof to work")
+
+assert.equal(JSON.stringify(x), '{"b":{"c":123},"a":"foo"}');
+assert.equal(JSON.stringify(ab), '{"text":"foo","id":123}');
+
 assert.doesNotThrow(function () {
-    var x = new TypeA({
+    var x = TypeA({
         b: 123,
-        a: "foo"
+        a: "foo",
+        c: [1, 2, 3]
     })
 
-    var y = new TypeA(x)
+    var y = TypeA(x)
+
+    assert.equal(JSON.stringify(x), JSON.stringify(y));
+    assert.ok(TypeA.created(y), "expected .created to work for descendants")
+
 }, "expected object creation from another object")
 
 
 assert.throws(
     function () {
-        var x = new TypeA({
+        var x = TypeA({
             x: 123
         })
     },
@@ -104,20 +126,33 @@ assert.throws(
 
 assert.throws(
     function () {
-        var x = new TypeA({
+        var x = TypeA({
             b: 123,
-            a: "foo"
+            a: "foo",
+            c: {}
+        })
+    },
+    /c:notArray/,
+    "expected TypeError on not an array"
+);
+
+assert.throws(
+    function () {
+        var x = TypeA({
+            b: 123,
+            a: "foo",
+            c: []
         })
 
-        var y = new TypeB(x)
+        var y = TypeB(x)
     },
-    /b\.c:undefined/,
+    /Unexpected field c/,
     "expected TypeError on object from object"
 );
 
 assert.throws(
     function () {
-        var x = new TypeB({
+        var x = TypeB({
             a: "foo",
             b: {
                 x: 123
@@ -130,7 +165,7 @@ assert.throws(
 
 assert.throws(
     function () {
-        var x = new TypeB({
+        var x = TypeB({
             a: "foo"
         })
     },
@@ -140,7 +175,7 @@ assert.throws(
 
 assert.throws(
     function () {
-        var x = new TypeB({
+        var x = TypeB({
             a: "foo",
             b: {
                 c: "A"
