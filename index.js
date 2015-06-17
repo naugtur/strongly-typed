@@ -32,17 +32,16 @@ function validate(obj, desc, parent) {
 }
 
 module.exports = function (desc, proto, allowExtras) {
-    proto = proto || {};
     var StronglyTyped = function StronglyTyped(obj) {
-        var self = Object.create(proto, {
+        var self = Object.create(StronglyTyped.prototype, {
             validate: {
                 value: function validateType() {
                     var errors = validate(this, desc);
                     if (errors.length > 0) {
                         throw new TypeError("Incorrect values for fields: " + errors.join());
                     }
-                    if (proto.validate) {
-                        return proto.validate.call(this);
+                    if (StronglyTyped.prototype.validate) {
+                        return StronglyTyped.prototype.validate.call(this);
                     }
                 }
             }
@@ -54,15 +53,16 @@ module.exports = function (desc, proto, allowExtras) {
                 throw new TypeError("Unexpected field " + key);
             }
         });
-        if (proto.constructor && proto.constructor.apply) {
-            proto.constructor.apply(self, arguments)
+        if (StronglyTyped.prototype.constructor && StronglyTyped.prototype.constructor.apply) {
+            StronglyTyped.prototype.constructor.apply(self, arguments)
         }
         self.validate();
         return self;
     };
+    StronglyTyped.prototype = proto || {};
     Object.defineProperty(StronglyTyped, "created", {
         value: function (obj) {
-            return proto.isPrototypeOf(obj);
+            return StronglyTyped.prototype.isPrototypeOf(obj);
         }
     });
     return StronglyTyped;
