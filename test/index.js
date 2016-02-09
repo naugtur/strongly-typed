@@ -21,6 +21,15 @@ var TypeC = stronglyTyped({
     "b": !"falsy indicates a field must exist, any type"
 })
 
+var TypeBOptional = stronglyTyped({
+    "a": "string",
+    "?z": "string",
+    "?b": {
+        "?c": "number",
+        d: "number"
+    }
+})
+
 var Autoid1 = stronglyTyped({
     "id": "number",
     "text": "string"
@@ -184,6 +193,40 @@ assert.throws(
     },
     /b\.c:string$/,
     "expected TypeError on incorrect object definition3"
+);
+
+
+// optional fields
+
+
+assert.doesNotThrow(function () {
+    var x = TypeBOptional({
+        b: {
+            c: 123,
+            d: 123
+        },
+        a: "foo"
+    })
+
+    var y = TypeBOptional({
+        a: "foo",
+        z: "bar",
+        b: {
+            d: 123
+        },
+    })
+}, "expected object with optional fields to succeed")
+
+
+assert.throws(
+    function () {
+        var x = TypeBOptional({
+            a: "foo",
+            z:1
+        })
+    },
+    /z:number$/,
+    "expected TypeError on incorrect optional definition1"
 );
 
 console.log('done');
