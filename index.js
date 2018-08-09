@@ -10,7 +10,10 @@ function validate(obj, desc, parent) {
     Object.keys(desc).forEach(function (key) {
         var descriptionVal = desc[key];
         if (typeof descriptionVal === "string") {
-            if (typeof obj[key] !== descriptionVal) {
+            var isNullable = descriptionVal[0] === "?";
+            var isInvalidForNullable = obj[key] !== null && typeof obj[key] !== descriptionVal.substr(1);
+            var itsJustInvald = typeof obj[key] !== descriptionVal;
+            if (isNullable ? isInvalidForNullable : itsJustInvald) {
                 errors.push(parent + key + ':' + (typeof obj[key]));
             }
         } else {
