@@ -15,6 +15,7 @@ var TypeName = stronglyTyped(interface_definition, [prototype], [allowUnspecifie
 ```
 
 `interface_definition` is a plain object of the expected structure with fields containing strings to match `typeof` in the typed objects.
+Additionally those strings can be prefixed with question mark `?` to allow null in addition to expected type.
 
 You can also use `null` or empty `{}` to indicate that the field must exist, without specifying anything else about it.
 
@@ -29,6 +30,7 @@ var Person = stronglyTyped({
         last:"string"
     },
     "age": "number",
+    "phoneNumber": "?string"
     "favorites": []
 })
 
@@ -39,6 +41,7 @@ var joe = Person({
         last:"Average"
     },
     "age": 52,
+    "phoneNumber": null,
     "favorites": ["beer","game"]
 })
 

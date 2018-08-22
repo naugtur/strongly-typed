@@ -21,6 +21,11 @@ var TypeC = stronglyTyped({
     "b": !"falsy indicates a field must exist, any type"
 })
 
+var TypeD = stronglyTyped({
+    "a": "?string",
+    "b": "?number"
+})
+
 var Autoid1 = stronglyTyped({
     "id": "number",
     "text": "string"
@@ -185,5 +190,34 @@ assert.throws(
     /b\.c:string$/,
     "expected TypeError on incorrect object definition3"
 );
+
+assert.doesNotThrow(function () {
+    var x = TypeD({
+        a: "test",
+        b: 44
+    })
+
+    var y = TypeD({
+        a: null,
+        b: 44
+    })
+
+    var z = TypeD({
+        a: "test",
+        b: null
+    })
+
+    var w = TypeD({
+        a: null,
+        b: null
+    })
+}, "expected object creation with primitive nullables to succeed")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: undefined,
+        b: undefined
+    })
+}, "expected object with nullables set to undefined to throw")
 
 console.log('done');
