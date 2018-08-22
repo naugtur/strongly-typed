@@ -26,6 +26,13 @@ var TypeD = stronglyTyped({
     "b": "?number"
 })
 
+var TypeE = stronglyTyped({
+    "a": "?object",
+    "b": {
+        "c":"?number"
+    }
+})
+
 var Autoid1 = stronglyTyped({
     "id": "number",
     "text": "string"
@@ -211,13 +218,78 @@ assert.doesNotThrow(function () {
         a: null,
         b: null
     })
-}, "expected object creation with primitive nullables to succeed")
+    var e = TypeD({
+        b: 44
+    })
+
+    var r = TypeD({
+        a: "test"
+    })
+
+    var t = TypeD({
+    })
+}, "expected object creation with primitive optionals to succeed")
 
 assert.throws(function() {
     var x = TypeD({
-        a: undefined,
-        b: undefined
+        a: true,
+        b: true
     })
-}, "expected object with nullables set to undefined to throw")
+}, "expected object with optionals set to wrong values to throw")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: false,
+        b: false
+    })
+}, "expected object with optionals set to false to throw")
+
+
+assert.doesNotThrow(function () {
+    var x = TypeE({
+        a: {},
+        b: {}
+    })
+
+    var y = TypeE({
+        a: null,
+        b: {}
+    })
+
+    var z = TypeE({
+        b: {}
+    })
+
+    var w = TypeE({
+        a: {},
+        b: {
+            c: 1
+        }
+    })
+
+}, "expected object creation with optional object field to succeed")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: "nope",
+        b: {}
+    })
+}, "expected optional object to validate when present")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: {}
+    })
+}, "expected object with only optional fields to still be required")
+
+
+assert.throws(function() {
+    var x = TypeD({
+        a: {},
+        b: {
+            c: "nope"
+        }
+    })
+}, "expected nested object with optionals set to invalid values to throw")
 
 console.log('done');
