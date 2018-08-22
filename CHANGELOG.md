@@ -1,3 +1,6 @@
+# 2.1.0
+ - add optional fields support
+
 # 2.0.0
  - switch from ocnstructors to factories
  - dropped instanceof support
