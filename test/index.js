@@ -21,6 +21,18 @@ var TypeC = stronglyTyped({
     "b": !"falsy indicates a field must exist, any type"
 })
 
+var TypeD = stronglyTyped({
+    "a": "?string",
+    "b": "?number"
+})
+
+var TypeE = stronglyTyped({
+    "a": "?object",
+    "b": {
+        "c":"?number"
+    }
+})
+
 var Autoid1 = stronglyTyped({
     "id": "number",
     "text": "string"
@@ -185,5 +197,99 @@ assert.throws(
     /b\.c:string$/,
     "expected TypeError on incorrect object definition3"
 );
+
+assert.doesNotThrow(function () {
+    var x = TypeD({
+        a: "test",
+        b: 44
+    })
+
+    var y = TypeD({
+        a: null,
+        b: 44
+    })
+
+    var z = TypeD({
+        a: "test",
+        b: null
+    })
+
+    var w = TypeD({
+        a: null,
+        b: null
+    })
+    var e = TypeD({
+        b: 44
+    })
+
+    var r = TypeD({
+        a: "test"
+    })
+
+    var t = TypeD({
+    })
+}, "expected object creation with primitive optionals to succeed")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: true,
+        b: true
+    })
+}, "expected object with optionals set to wrong values to throw")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: false,
+        b: false
+    })
+}, "expected object with optionals set to false to throw")
+
+
+assert.doesNotThrow(function () {
+    var x = TypeE({
+        a: {},
+        b: {}
+    })
+
+    var y = TypeE({
+        a: null,
+        b: {}
+    })
+
+    var z = TypeE({
+        b: {}
+    })
+
+    var w = TypeE({
+        a: {},
+        b: {
+            c: 1
+        }
+    })
+
+}, "expected object creation with optional object field to succeed")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: "nope",
+        b: {}
+    })
+}, "expected optional object to validate when present")
+
+assert.throws(function() {
+    var x = TypeD({
+        a: {}
+    })
+}, "expected object with only optional fields to still be required")
+
+
+assert.throws(function() {
+    var x = TypeD({
+        a: {},
+        b: {
+            c: "nope"
+        }
+    })
+}, "expected nested object with optionals set to invalid values to throw")
 
 console.log('done');

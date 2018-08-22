@@ -10,7 +10,12 @@ function validate(obj, desc, parent) {
     Object.keys(desc).forEach(function (key) {
         var descriptionVal = desc[key];
         if (typeof descriptionVal === "string") {
-            if (typeof obj[key] !== descriptionVal) {
+            var isOptional = descriptionVal.substr(0,1) === "?";
+            var typeToCheck = (isOptional ? descriptionVal.substr(1) : descriptionVal)
+            if(isOptional && (obj[key] === null || typeof obj[key] === "undefined")){
+                return
+            }
+            if ( typeof obj[key] !== typeToCheck) {
                 errors.push(parent + key + ':' + (typeof obj[key]));
             }
         } else {
