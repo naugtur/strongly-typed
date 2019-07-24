@@ -11,10 +11,22 @@ var SimpleValue = stronglyTyped({
     ]
 });
 
-var Object = stronglyTyped({
+var ObjectValue = stronglyTyped({
     array: [
         {
             value: "string"
+        }
+    ]
+});
+
+var FreakyValue = stronglyTyped({
+    outerArray: [
+        {
+            innerArray: [
+                {
+                    value: "string"
+                }
+            ]
         }
     ]
 });
@@ -50,7 +62,7 @@ assert.throws(function() {
 });
 
 assert.doesNotThrow(function() {
-    Object({
+    ObjectValue({
         array: [
             { value: "a" },
             { value: "b" },
@@ -60,11 +72,65 @@ assert.doesNotThrow(function() {
 });
 
 assert.throws(function() {
-    Object({
+    ObjectValue({
         array: [
             { value: "a" },
             { value: 2 },
             { value: "c" }
+        ]
+    })
+});
+
+assert.doesNotThrow(function () {
+    FreakyValue({
+        outerArray: [
+            {
+                innerArray: [
+                    {
+                        value: "a"
+                    },
+                    {
+                        value: "b"
+                    }
+                ]
+            },
+            {
+                innerArray: [
+                    {
+                        value: "c"
+                    },
+                    {
+                        value: "d"
+                    }
+                ]
+            }
+        ]
+    })
+});
+
+assert.throws(function () {
+    FreakyValue({
+        outerArray: [
+            {
+                innerArray: [
+                    {
+                        value: "a"
+                    },
+                    {
+                        value: "b"
+                    }
+                ]
+            },
+            {
+                innerArray: [
+                    {
+                        value: 3
+                    },
+                    {
+                        value: "d"
+                    }
+                ]
+            }
         ]
     })
 });
