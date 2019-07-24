@@ -50,6 +50,34 @@ var joe = Person({
 Person.created(joe) === true
 ```
 
+If `[]` is left empty in description, inner elements of the array are not validated. If there is first element in the array description, it's treated as schema for each element inside the array. Additional elements in description are omitted.
+
+_Example - array deep validation_
+
+```javascript
+var Person2 = stronglyTyped({
+    "name": "string",
+    "favorites": [
+        {
+            "id": "number",
+            "value": "string"
+        }
+    ]
+})
+
+//create instance
+var moe = Person2({
+    "name": "Moe Average"
+    "favorites": [
+        { "id": 1, "value": "beer" },
+        { "id": 2, "value": "game" }
+    ]
+})
+
+//check type
+Person2.created(moe) === true
+```
+
 More examples in tests/index.js
 
 ## No new keyword
