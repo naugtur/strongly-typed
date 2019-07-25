@@ -1,5 +1,14 @@
 "use strict";
-
+function validateAgainstStringDesc(descriptionVal, value) {
+    var isOptional = descriptionVal.substr(0,1) === "?";
+    var typeToCheck = (isOptional ? descriptionVal.substr(1) : descriptionVal);
+    if(isOptional && (value === null || typeof value === "undefined")){
+        return;
+    }
+    if ( typeof value !== typeToCheck) {
+        return ':' + (typeof value);
+    }
+}
 
 function validate(obj, desc, parent) {
     if (!desc) {
@@ -7,21 +16,31 @@ function validate(obj, desc, parent) {
     }
     parent = parent || '';
     var errors = [];
+
+    if (typeof desc === "string") {
+        var errorOnStringDesc = validateAgainstStringDesc(desc, obj);
+        if (errorOnStringDesc) {
+            errors.push(parent + errorOnStringDesc)
+        }
+        return errors;
+    }
+
     Object.keys(desc).forEach(function (key) {
         var descriptionVal = desc[key];
         if (typeof descriptionVal === "string") {
-            var isOptional = descriptionVal.substr(0,1) === "?";
-            var typeToCheck = (isOptional ? descriptionVal.substr(1) : descriptionVal)
-            if(isOptional && (obj[key] === null || typeof obj[key] === "undefined")){
-                return
-            }
-            if ( typeof obj[key] !== typeToCheck) {
-                errors.push(parent + key + ':' + (typeof obj[key]));
+            var errorOnStringDesc = validateAgainstStringDesc(descriptionVal, obj[key]);
+            if (errorOnStringDesc) {
+                errors.push(parent + key + errorOnStringDesc);
             }
         } else {
             if (Array.isArray(descriptionVal)) {
                 if (!Array.isArray(obj[key])) {
                     errors.push(parent + key + ':notArray');
+                } else if (descriptionVal[0]) {
+                    obj[key].forEach((arrElem, idx) => {
+                        var arrParentName = parent + key + "[" + idx + "].";
+                        errors = errors.concat(validate(arrElem, descriptionVal[0], arrParentName));
+                    })
                 }
             } else {
                 if (obj.hasOwnProperty(key)) {

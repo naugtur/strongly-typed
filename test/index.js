@@ -1,5 +1,7 @@
-var stronglyTyped = require('../')
-var assert = require('assert')
+var stronglyTyped = require('../');
+var assert = require('assert');
+
+require("./arrayElementsValidation");
 
 var TypeA = stronglyTyped({
     "a": "string",
