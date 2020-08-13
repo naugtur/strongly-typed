@@ -19,7 +19,7 @@ Additionally those strings can be prefixed with question mark `?` to make them o
 
 You can also use `null` or empty `{}` to indicate that the field must exist, without specifying anything else about it.
 
-You can also use `[]` to enforce field being an array (as `typeof` retrns `"object"` for arrays).
+You can also use `[]` to enforce field being an array (as `typeof` returns `"object"` for arrays).
 
 _Example_
 
